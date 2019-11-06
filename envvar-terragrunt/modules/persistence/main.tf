@@ -22,16 +22,6 @@ resource "aws_dynamodb_table" "data" {
     ignore_changes = ["ttl"]
   }
 
-  global_secondary_index {
-    name               = "customerIdIndex"
-    hash_key           = "customerId"
-    range_key          = ""
-    write_capacity     = 1
-    read_capacity      = 1
-    projection_type    = "KEYS_ONLY"
-    non_key_attributes = []
-  }
-
   server_side_encryption {
     enabled = "true"
   }
