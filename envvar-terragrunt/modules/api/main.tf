@@ -8,7 +8,7 @@ resource "aws_api_gateway_rest_api" "api" {
 
 resource "aws_api_gateway_deployment" "api_deployment" {
   depends_on = [
-    "aws_api_gateway_method.get_code_method",
+    "aws_api_gateway_method.get_customer_id_method",
     "aws_api_gateway_integration.integration"]
 
   rest_api_id = "${aws_api_gateway_rest_api.api.id}"

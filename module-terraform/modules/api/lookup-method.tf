@@ -1,18 +1,18 @@
-##############################  Get Data By Dealercode ###################################################
+##############################  Get Data By CustomerId ###################################################
 resource "aws_api_gateway_resource" "parent" {
   rest_api_id = "${aws_api_gateway_rest_api.api.id}"
   parent_id = "${aws_api_gateway_rest_api.api.root_resource_id}"
   path_part = "DC"
 }
-resource "aws_api_gateway_resource" "get_code" {
+resource "aws_api_gateway_resource" "get_customer_id" {
   rest_api_id = "${aws_api_gateway_rest_api.api.id}"
   parent_id = "${aws_api_gateway_resource.parent.id}"
-  path_part = "{dealercode}"
+  path_part = "{customerId}"
 }
 
-resource "aws_api_gateway_method" "get_code_method" {
+resource "aws_api_gateway_method" "get_customer_id_method" {
   rest_api_id = "${aws_api_gateway_rest_api.api.id}"
-  resource_id = "${aws_api_gateway_resource.get_code.id}"
+  resource_id = "${aws_api_gateway_resource.get_customer_id.id}"
   http_method = "GET"
   authorization = "NONE"
   api_key_required=true
@@ -20,8 +20,8 @@ resource "aws_api_gateway_method" "get_code_method" {
 
 resource "aws_api_gateway_integration" "integration" {
   rest_api_id             = "${aws_api_gateway_rest_api.api.id}"
-  resource_id             = "${aws_api_gateway_resource.get_code.id}"
-  http_method             = "${aws_api_gateway_method.get_code_method.http_method}"
+  resource_id             = "${aws_api_gateway_resource.get_customer_id.id}"
+  http_method             = "${aws_api_gateway_method.get_customer_id_method.http_method}"
 
   integration_http_method = "POST"
 
@@ -35,7 +35,7 @@ resource "aws_api_gateway_integration" "integration" {
 {
   "TableName": "${var.data-table-name}",
   "Key": {
-    "dealercode": { "S": "$input.params('dealercode')" }
+    "customerId": { "S": "$input.params('customerId')" }
   }
 }
 TEMPLATE
@@ -45,8 +45,8 @@ TEMPLATE
 // AWS Service Passthru supporting configuration
 resource "aws_api_gateway_method_response" "success" {
   rest_api_id = "${aws_api_gateway_rest_api.api.id}"
-  resource_id = "${aws_api_gateway_resource.get_code.id}"
-  http_method = "${aws_api_gateway_method.get_code_method.http_method}"
+  resource_id = "${aws_api_gateway_resource.get_customer_id.id}"
+  http_method = "${aws_api_gateway_method.get_customer_id_method.http_method}"
   status_code = "200"
 }
 
@@ -55,15 +55,15 @@ resource "aws_api_gateway_integration_response" "integration_response" {
     "aws_api_gateway_integration.integration"]
 
   rest_api_id = "${aws_api_gateway_rest_api.api.id}"
-  resource_id = "${aws_api_gateway_resource.get_code.id}"
-  http_method = "${aws_api_gateway_method.get_code_method.http_method}"
+  resource_id = "${aws_api_gateway_resource.get_customer_id.id}"
+  http_method = "${aws_api_gateway_method.get_customer_id_method.http_method}"
   status_code = "${aws_api_gateway_method_response.success.status_code}"
 
   //  response_templates {
   //    "application/json"    =  <<EOF
   //#set($inputRoot = $input.path('$.Item'))
   //  {
-  //    "dealercode": "$inputRoot.dealercode.S",
+  //    "customerId": "$inputRoot.customerId.S",
   //    "one": "$inputRoot.one.N"
   //  }
   //EOF

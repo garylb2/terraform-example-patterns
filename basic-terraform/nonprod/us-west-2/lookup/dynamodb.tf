@@ -4,11 +4,11 @@ resource "aws_dynamodb_table" "data" {
   name           = "${local.application-name}-data"
   read_capacity  = 1
   write_capacity = 1
-  hash_key       = "dealercode"
+  hash_key       = "customerId"
   range_key      = ""
 
   attribute = [{
-    name = "dealercode"
+    name = "customerId"
     type = "S"
   }]
 
@@ -23,8 +23,8 @@ resource "aws_dynamodb_table" "data" {
   }
 
   global_secondary_index {
-    name               = "dealercodeIndex"
-    hash_key           = "dealercode"
+    name               = "customerIdIndex"
+    hash_key           = "customerId"
     range_key          = ""
     write_capacity     = 1
     read_capacity      = 1
@@ -63,7 +63,7 @@ resource "aws_dynamodb_table_item" "example" {
   hash_key = "${aws_dynamodb_table.data.hash_key}"
   item = <<ITEM
 {
-  "dealercode": {"S": "99998-F"},
+  "customerId": {"S": "99998-F"},
   "one": {"N": "11111"},
   "two": {"N": "22222"},
   "three": {"N": "33333"},
